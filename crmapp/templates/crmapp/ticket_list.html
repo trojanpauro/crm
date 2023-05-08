@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+{% include "crmapp/datatables.html" %}
+
+
+{% load static %}
+
+<a class="ui button " id="" href="{% url 'ticket_create'%}" >Add A Ticket </a>  
+
+
+	<div class="container">
+
+	<div class="ui hidden divider"></div>
+
+        <h3 class="ui block header  center aligned  ">
+
+ <div class="eight wide column">Ticket</div>
+
+      
+		  </h3>
+
+
+
+		<section>
+
+			<div class="demo-html"></div>
+			<table id="example" class="ui celled table" style="width:100%">
+				<thead>
+
+
+					<tr>
+						<th>Date Added</th>
+						<th>Title</th>
+					
+						<th>Agents</th>
+						<th>View</th>
+					</tr>
+				</thead>
+				<tbody>
+
+          {% if ticket_list %}
+    {% for ticket in  ticket_list %}
+					<tr>
+						<td>{{ ticket.date_added}}</td>
+						<td>{{ ticket.tittle }}</td>
+						<td>
+
+							{% for agent in  ticket.agents.all %}
+
+                            {{agent}},
+							{% endfor%}
+
+
+						</td>
+
+						<td >
+<a class="ui red icon button" href="{% url 'ticket_delete' ticket.id %}">
+  <i class="trash icon"></i>
+</a>
+
+
+<a class="ui olive icon button" href="{% url 'ticket_detail' ticket.id %}">
+  <i class="eye icon"></i>
+</a>
+
+
+<a href="{% url 'ticket_update' ticket.id %}" class="ui green icon button"><i class="pencil alternate icon"></i></a></td>
+					</tr>
+
+
+
+			
+
+    {% endfor %}
+
+
+{% else %}
+    <p>Empty</p>
+{% endif %}
+
+				</tfoot>
+			</table>
+
+
+
+     
+       
+      
+
+
+    </section>
+</div>
+{% endblock %}

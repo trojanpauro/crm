@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+
+
+{% if messages %}
+ {% for message in messages %}
+<div class="ui info message">
+   
+  {{ message }}
+  
+</div>
+  {% endfor %}
+{% endif %}
+
+<form  class="ui form" method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Save" class="ui green button">
+</form>
+
+
+
+
+
+<script type="text/javascript">
+	
+ $( document ).ready( 
+ function() {
+ 	var date = $("#id_transaction_date").val();
+ 	$("#id_transaction_date").val(date);
+ 	   });
+
+$("#id_customer").addClass("ui search selection fluid dropdown")
+$('.dropdown').dropdown();
+</script>
+
+{% endblock %}

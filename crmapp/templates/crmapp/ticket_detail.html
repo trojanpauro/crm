@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+
+
+<a class="ui icon button" href="{% url 'customer_update'  object.id %}">
+	
+	 <i class="pencil icon"></i>
+</a>
+
+
+<p>Tittle:  {{ object.tittle }}</p>
+<p>Agents: {% for agent in  object.agents.all %}
+
+                            {{agent}},
+							{% endfor%}</p>
+
+
+
+
+
+
+
+<a class="ui button " href={% url 'customer_ticket_list' object.id %} >Tickets</a>  
+
+<a class="ui button" id="add_invoice" href={% url 'customer_message_list' object.id %}  >Messages</a>
+
+
+
+ 
+{% endblock %}

@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+
+  {% load static %}
+  
+
+<link rel="stylesheet" type="text/css" href="{% static 'crmapp/css/semantic.min.css' %}">
+
+<script type="text/javascript" src="{% static 'crmapp/js/jquery.js'%}"></script>
+
+<script type="text/javascript" src="{% static 'crmapp/js/semantic.min.js'%}"></script>
+
+  
+
+
+
+<style type="text/css">
+  
+.marginlefting {
+   margin-left: 60px !important;
+ }
+
+ .expandedMargin{
+  margin-left: 262px !important;
+ }
+
+  .compressedMargin{
+  margin-left: 70px !important;
+ }
+ 
+ .displaynone {
+   display: none !important;
+ }
+ 
+ .displayblock {
+   display: block !important;
+ }
+ 
+ .sidebar .item i {
+   font-size: 24px;
+   margin-top: -5px !important;
+ }
+ 
+.title.item {
+   padding: .92857143em 1.14285714em !important;
+   color:#1a0fa2 !important;
+   border-top-style: solid !important;
+   border-top-width: 3px !important;
+ }
+ .dropdown .menu .header {
+   padding-top: 3.9px!important;
+   padding-bottom: 3.9px!important;
+ }
+
+ .blue.button {
+  background-color: #1a0fa2 !important;
+ }
+
+.card {
+
+  background-color: #e3eaf0 !important;
+
+}
+
+ 
+</style>
+</head>
+
+
+
+
+<body style = 'background-color: #ffffff'>
+
+
+
+
+
+
+<div class="ui sidebar vertical left menu overlay visible" style="-webkit-transition-duration: 0.1s; overflow: visible !important;">
+  <div class="item logo">
+
+   
+      <h3 class="ui header" style="color:#1a0fa2"><img src="{% static 'crmapp/images/logo.png'%}"  />Kernel CRM</h3>
+   
+    
+    
+    <img src="{% static 'crmapp/images/logo.png'%}" style="display: none" />
+
+    
+  </div>
+ 
+
+
+ <div class="ui accordion">
+    <a class="title item" style="color:#182f7c"> <b>Customers</b> <i class="dropdown icon"></i>
+                </a>
+    <div class="content" style="padding-bottom: 0px;padding-top: 0px;">
+      <a class="item" href="/customers/all/">All
+                    </a>
+
+      <a class="item" href="/customers/first_contact/">First Contact
+
+
+
+                    </a>
+
+
+
+      <a class="item" href="/customers/multiple_contact/">Multiple Contact
+                    </a>
+
+
+         <a class="item" href="/customers/purchased/">Purchased
+                    </a>
+
+
+         <a class="item" href="/customers/unsubscribed/">Unsubscribed
+                    </a>
+
+
+    </div>
+
+       <div class="title item ">
+      <i class="dropdown icon"></i><b>Conversations</b>
+    </div>
+    <div class="content">
+
+        <a class="item" href="/conversations/all">All
+                    </a>
+
+            <a class="item" href="inbox.html">Read
+                    </a>
+
+                         <a class="item" href="mail.html">Unread
+   
+                    </a>
+
+
+      <a class="item" href="mail.html">Closed
+   
+                    </a>
+    </div>
+
+
+
+
+    <div class="title item ">
+      <i class="dropdown icon"></i><b> Leads</b>
+    </div>
+    <div class="content">
+
+        <a class="item" href="/leads/all">Prospects
+                    </a>
+
+
+      <a class="item" href="">Qualified Leads
+                    </a>
+            <a class="item" href="inbox.html">
+                    </a>
+
+                         <a class="item" href="mail.html">Sales Pitch
+   
+                    </a>
+
+
+      <a class="item" href="mail.html">Objection Handling</a>
+      <a class="item" href="mail.html">Nurturing</a>
+    </div>
+    <div class="title item">
+      <i class="dropdown icon"></i><b> Sales</b>
+    </div>
+    <div class="content">
+      <a href="/sales/all/" class="item" >All
+                    </a>
+
+
+    </div>
+
+
+        <div class="title item">
+      <i class="dropdown icon"></i><b>Field Service</b>
+    </div>
+    <div class="content">
+      <a class="item" href="sidebar.html">Installations
+                    </a>
+      <a class="item" href="menu.html">Repairs
+                    </a>
+
+    <a class="item" href="menu.html">Disconnections
+                    </a>
+
+    </div>
+
+
+
+
+        <div class="title item">
+      <i class="dropdown icon"></i><b>Tickets</b>
+    </div>
+    <div class="content">
+
+       <a class="item" href="/tickets/all/">All
+                    </a>
+      <a class="item" href="/tickets/todo/">Todo
+                    </a>
+      <a class="item" href="/tickets/in_progress/">In Progress
+                    </a>
+
+
+       <a class="item" href="/tickets/done/">Done
+                    </a>
+
+    </div>
+
+    <a class=" title item" style=" border-bottom-style: solid !important;
+   border-bottom-width: 3px !important;">
+     <i class="dropdown icon"></i> <b>Reports</b>
+    </a>
+
+        <div class="content">
+
+      <a class="item" href="">Analytics</a>
+      <a class="item" href="notification/course/id">Web</a>
+      <a class="item"  href="notification/course/id">Marketing </a>
+
+    </div>
+
+
+
+
+   
+  </div>
+
+
+
+
+  <div class="ui dropdown item displaynone">
+    <z>Dashboard</z>
+    <i class="icon demo-icon heart icon-heart"></i>
+
+    <div class="menu">
+      <div class="header">
+        Dashboard
+      </div>
+      <div class="ui divider"></div>
+      <a class="item" href="dashboard.html">Dashboard
+                    </a>
+    </div>
+  </div>
+  <div class="ui dropdown item displaynone">
+    <z>Layout</z>
+    <i class="icon demo-icon world icon-globe"></i>
+
+    <div class="menu">
+      <div class="header">
+        Layout
+      </div>
+      <div class="ui divider"></div>
+      <a class="item" href="inbox.html">Inbox
+                    </a>
+      <a class="item" href="mail.html">Mailbox
+                    </a>
+      <a class="item" href="chat.html">Chat
+                    </a>
+  
+    </div>
+  </div>
+  <div class="ui dropdown item displaynone">
+    <z>Pages</z>
+    <i class="icon demo-icon  icon-params alarm"></i>
+
+    <div class="menu">
+      <div class="header">
+        Layouts
+      </div>
+      <div class="ui divider"></div>
+      <a class="item" href="sidebar.html">Sidebar
+                    </a>
+      <a class="item" href="menu.html">Nav
+                    </a>
+      <a class="item" href="animatedicon.html">Animated Icon
+                    </a>
+     
+    </div>
+  </div>
+</div>
+<div class="pusher">
+  <div class="ui menu asd borderless" style="border-radius: 0!important; border: 0; margin-left: 260px; -webkit-transition-duration: 0.1s;">
+    <a class="item openbtn">
+      <i class="icon content"></i>
+    </a>
+    <a class="item" href="{% url 'testbed' 'new'%}">Message Test Bed
+                </a>
+    <div class="right menu">
+    
+       {% if request.user.is_authenticated %}
+    <h5 class=" ui item center aligned icon  popy">
+  <i class="circular inverted user icon" style="background-color:#1a0fa2!important "></i>
+  <b style="color: #1a0fa2;margin-left:10px">    {{ request.user.first_name }}  {{ request.user.last_name }}</b>
+</h5>
+
+
+   <div class="ui special popup">
+  
+ 
+
+  <a class="ui inverted blue button"   href="{% url 'logout' %}">Logout</a>
+
+</div>
+
+
+             {% endif %}
+
+    </div>
+  </div>
+
+
+<div class="expandedMargin" id="content" style="padding:15px;">
+  {% block content %}
+
+  {% endblock %}
+
+  </div>
+
+ 
+</div>
+
+
+</body>
+
+
+
+
+<script type="text/javascript">
+  
+ $(".openbtn").on("click", function() {
+   $(".ui.sidebar").toggleClass("very thin icon");
+   $(".asd").toggleClass("marginlefting");
+   $(".sidebar z").toggleClass("displaynone");
+   $(".ui.accordion").toggleClass("displaynone");
+   $(".ui.dropdown.item").toggleClass("displayblock");
+   $("#content").toggleClass("expandendMargin");
+    $("#content").toggleClass("compressedMargin");
+   $(".logo").find('img').toggle();
+   $(".logo").find('h3').toggle();
+
+ })
+ $(".ui.dropdown").dropdown({
+   allowCategorySelection: true,
+   transition: "fade up"
+ });
+
+ $('.ui.accordion').accordion({
+   selector: {
+
+   }
+ });
+
+
+</script>
+
+
+<script type="text/javascript">
+  
+
+  $('.popy')
+  .popup({
+    popup: '.special.popup',
+    delay: {
+  show: 0,
+  hide: 2000
+}
+  })
+;
+</script>
+
+
+</html>

@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+
+{% load static %}
+
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, user-scalable=no">
+	<title>Reports</title>
+	<link rel="stylesheet" type="text/css" href="{% static 'crmapp/css/semantic.min.css'%}">
+	<link rel="stylesheet" type="text/css" href="{% static 'crmapp/reportMedia/css/dataTables.semanticui.css'%}">
+	<link rel="stylesheet" type="text/css" href="{% static 'crmapp/reportMedia/css/shCore.css'%}">
+	<link rel="stylesheet" type="text/css" href="{% static 'crmapp/reportMedia/css/demo.css'%}">
+	<link rel="stylesheet" type="text/css" href="{% static 'crmapp/css/buttons.semanticui.min.css'%}">
+
+    <style type="text/css" class="init">
+
+    .ui.selection.dropdown{
+        margin-bottom: 30px;
+    }
+
+	</style>
+    <script type="text/javascript" language="javascript" src="{% static 'crmapp/reportMedia/js/jquery.min.js'%}"></script>
+
+	<script type="text/javascript" language="javascript" src="{% static 'crmapp/reportMedia/js/jquery.dataTables.js'%}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'crmapp/reportMedia/js/dataTables.semanticui.js'%}"></script>
+    <link rel="stylesheet" href="{% static 'crmapp/css/jquery-ui.min.css' %}">
+	<script type="text/javascript" language="javascript" src="{% static 'crmapp/reportMedia/js/semantic.min.js' %}"></script>
+	<script type="text/javascript" language="javascript" src="{% static 'crmapp/reportMedia/js/shCore.js'%}"></script>
+	<script type="text/javascript" language="javascript" src="{% static 'crmapp/reportMedia/js/demo.js'%}"></script>
+
+	<script type="text/javascript" language="javascript" src="{% static 'crmapp/js/dataTables.buttons.min.js'%}"></script>
+	<script type="text/javascript" language="javascript" src="{% static 'crmapp/js/buttons.semanticui.min.js'%}"></script>
+
+	<script type="text/javascript" language="javascript" src="{% static 'crmapp/js/jszip.min.js'%}"></script>
+	<script type="text/javascript" language="javascript" src="{% static 'crmapp/js/pdfmake.min.js'%}"></script>
+	<script type="text/javascript" language="javascript" src="{% static 'crmapp/js/vfs_fonts.js'%}"></script>
+	<script type="text/javascript" language="javascript" src="{% static 'crmapp/js/buttons.html5.min.js'%}"></script>
+
+
+<script type="text/javascript" language="javascript" src="{% static 'crmapp/js/buttons.print.min.js'%}"></script>
+
+<script type="text/javascript" language="javascript" src="{% static 'crmapp/js/buttons.colVis.min.js'%}"></script>
+
+
+	<script type="text/javascript" language="javascript" class="init">
+
+
+	$(document).ready(function() {
+    var table = $('#example').DataTable( {
+        lengthChange: true,
+        buttons: [ 'copy', 'excel', 'pdf', 'colvis' ]
+    } );
+
+    table.buttons().container()
+        .appendTo( $('div.eight.column:eq(0)', table.table().container()) );
+} );
+
+	</script>
+</head>
+
+
+
+
+<a class="ui blue button " id="" href="{% url 'customer_create'%}" >Create Customer</a>  
+
+
+	<div class="container">'
+
+	<div class="ui hidden divider"></div>
+
+        <h3 class="ui block header  center aligned  ">
+
+ <div class="eight wide column">Customers</div>
+
+      
+		  </h3>
+
+
+
+		<section>
+
+			<div class="demo-html"></div>
+			<table id="example" class="ui celled table" style="width:100%">
+				<thead>
+
+
+					<tr>
+						<th>First Name</th>
+						<th>Last Name</th>
+						<th>Phone Number</th>
+						<th>Email</th>
+						<th>Branch</th>
+						<th>View</th>
+					</tr>
+				</thead>
+				<tbody>
+
+          {% if customer_list %}
+    {% for customer in customer_list %}
+					<tr>
+						<td>{{ customer.first_name}}</td>
+						<td>{{customer.last_name}}</td>
+						<td>{{customer.phone}}</td>
+						<td>{{customer.email}}</td>
+						<td >{{customer.branch}}</td>
+						<td >
+<a class="ui red icon button" href="{% url 'customer_delete' customer.id %}">
+  <i class="trash icon"></i>
+</a>
+
+
+<a class="ui olive icon button" href="{% url 'customer_detail' customer.id %}">
+  <i class="eye icon"></i>
+</a>
+
+
+<a href="{% url 'customer_update' customer.id %}" class="ui green icon button"><i class="pencil alternate icon"></i></a></td>
+					</tr>
+
+
+
+			
+
+    {% endfor %}
+
+
+{% else %}
+    <p>Empty</p>
+{% endif %}
+
+				</tfoot>
+			</table>
+
+
+
+     
+       
+      
+
+
+    </section>
+</div>
+{% endblock %}

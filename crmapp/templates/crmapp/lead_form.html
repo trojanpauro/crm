@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+<form  class="ui form" method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Save" class="ui green button">
+</form>
+
+
+<script type="text/javascript">
+
+
+$("#id_customer").addClass("ui search selection fluid dropdown")
+$("#id_conversation").addClass("ui search selection fluid dropdown")
+$("#id_intrested_in").addClass("ui search multiple  selection fluid dropdown")
+$('.dropdown').dropdown();
+
+</script>
+</script>
+
+{% endblock %}

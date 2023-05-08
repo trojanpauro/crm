@@ -1,0 +1,274 @@
+{% extends "blank_base.html" %}
+{% block content %}
+{% load static %}
+
+
+<script type="text/javascript">
+ // A $( document ).ready() block.
+$( document ).ready(function() {
+    $('#town-dropdown').dropdown();
+    $('#role-dropdown').dropdown();
+
+});       
+
+</script>
+
+
+
+
+
+<div class="container">
+    <div class="column">
+        <div class="ui card" style="padding:1.5rem 1rem;width:60%;margin:3rem auto">
+            <div class="content">
+
+    <h2 class="ui  image header">
+      <img src ="{% static 'crmapp/images/logo.png' %}" class=" ui image">
+      </h2>
+
+      <h3 class="headers"> Create  your account</h3>
+
+                <form method="POST"  class="ui form" autocomplete="off" action="/accounts/register/">
+
+
+                    {% csrf_token %}
+              
+               <div class="ui error message"></div>
+                
+                    
+                    <div class="field" id="personal_details">
+                        
+                        <div class="ui divider"></div>
+                        <div class="ui two fields">
+                          <div class="field">
+                            <label>Name</label>
+                            <input type="text" id="name" name="name" placeholder="Name" required>
+                           
+                            </div>
+                            
+                               
+                                <div class="field">
+                                  <label>Surname</label>
+                                    <input type="text" id="surname" name="surname" placeholder="Surname" required>
+                                </div>
+                              
+                        </div>
+                          <div class="two fields">
+                             <div class="field">
+                                <label>Email</label>
+          <div class="ui left icon input">
+            <i class="at icon"></i>
+            <input type="text" name="email" placeholder="E-mail address" required>
+          </div>
+        </div>
+                            <div class="field">
+                              <label>Phone  number</label>
+  <input type="tel" id="phone_number" name="phone_number" placeholder="+263" autocomplete ="false"required >
+                            </div>
+                          </div>
+
+
+
+                            <div class="two fields">
+                          <div class="field">
+                            <label>Password</label>
+                              <input type="password" name="password" placeholder="Password" required>
+                           
+                          </div>
+                          <div class="field">
+                            <label>Confirm Password</label>
+                            <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+                          </div>
+                        </div>
+
+
+
+                              <div class="two fields" style="margin-bottom:20px !important">
+                            <div class="field">
+                              <label>Town</label>
+                              <div class="ui fluid search selection dropdown" id="town-dropdown">
+                                <input  name="town" id="town" type="hidden">
+                                <i class="dropdown icon"></i>
+                                <div class="default text">Town</div>
+                                <div class="menu">
+                                <div class="item" data-value="harare">Harare</div>
+                                <div class="item" data-value="bulawayo">Bulawayo</div>
+                                <div class="item" data-value="mutare">Mutare</div>
+                                <div class="item" data-value="gweru">Gweru</div>
+                                <div class="item" data-value="masvingo">Masvingo</div>
+                                <div class="item" data-value="chinhoyi">Chinhoyi</div>
+                                <div class="item" data-value="chiredzi">Chiredzi</div>
+                                <div class="item" data-value="kariba">Kariba</div>
+                                <div class="item" data-value="beitbridge">Beit Bridge</div>
+                               <div class="item" data-value="kwekwe">Kwekwe</div>
+                                <div class="item" data-value="Kadoma">Kadoma</div>
+                                <div class="item" data-value="Norton">Norton</div>
+                                <div class="item" data-value="Marondera ">Marondera </div>
+                                <div class="item" data-value="Ruwa">Ruwa</div>
+                                <div class="item" data-value="Chegutu">Chegutu</div>
+                                <div class="item" data-value="Zvishavane">Zvishavane</div>
+                                <div class="item" data-value="Bindura">Bindura</div>
+                                <div class="item" data-value="Redcliff">Redcliff</div>
+                                <div class="item" data-value="Victoria Falls">Victoria Falls</div>
+                                <div class="item" data-value="hwange">Hwange</div>
+                                <div class="item" data-value="Rusape">Rusape</div>
+                                <div class="item" data-value="kariba">Kariba</div>
+                                <div class="item" data-value="beitbridge">Beit Bridge</div>
+                                <div class="item" data-value="Karoi">Karoi</div>
+                                <div class="item" data-value="Chipinge">Chipinge</div>
+                                <div class="item" data-value="Gokwe">Gokwe</div>   
+                                <div class="item" data-value="Shurugwi">Shurugwi</div>
+   
+ 
+                              </div>
+                               </div>
+                            </div>
+
+                            <div class="field">
+                              <label>I am a </label>
+                               <div class="ui fluid selection dropdown" id="role-dropdown">
+                                <input  name="role" id="role"  type="hidden">
+                                <i class="dropdown icon"></i>
+                                <div class="default text">Role</div>
+                                <div class="menu">
+                                   <div class="item" data-value="buyer">Buyer</div>
+                                <div class="item" data-value="contractor">Contractor</div>
+                                <div class="item" data-value="bulding_owner">Bulding Owner</div>
+                                <div class="item" data-value="wholeseler">Wholeseler</div>
+                                <div class="item" data-value="retailer">Retailer</div>
+                                 <div class="item" data-value="other">Other</div>
+
+                               
+                              </div>
+                               </div>
+                            </div>
+                          </div>
+
+                          <div class="field">
+                            <label>Street Address</label>
+                            <textarea rows="2" id="address" name="address"  placeholder="For Deliveries and promotional material" required></textarea>
+                          </div>
+
+
+                       
+
+
+                      
+
+                      
+                    </div>
+  <button class="ui blue button">Signup</button>
+
+
+                
+
+                    <p style="margin:auto;text-align:center;margin-top:20px">
+                      Already a member?<strong>
+                        <a href="/login"> Go to user login page.</a>
+                      </strong>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+  $('.ui.form')
+  .form({
+    fields: {
+      name: {
+        identifier: 'name',
+        rules: [
+          {
+            type   : 'empty',
+            prompt : 'Please enter your name'
+          }
+        ]
+      },
+      surname: {
+        identifier: 'surname',
+        rules: [
+          {
+            type   : 'empty',
+            prompt : 'Please enter your surname'
+          }
+        ]
+      },
+      role: {
+        identifier: 'role',
+        rules: [
+          {
+            type   : 'empty',
+            prompt : 'Please select a role'
+          }
+        ]
+      },
+      address: {
+        identifier: 'address',
+        rules: [
+          {
+            type   : 'empty',
+            prompt : 'Please enter an address'
+          }
+        ]
+      },
+      password: {
+        identifier: 'password',
+        rules: [
+          {
+            type   : 'empty',
+            prompt : 'Please enter a password'
+          },
+          {
+            type   : 'minLength[6]',
+            prompt : 'Your password must be at least {ruleValue} characters'
+          }
+        ]
+      },
+
+
+      confirm_password: {
+        identifier: 'confirm_password',
+        rules: [
+          {
+            type   : 'empty',
+            prompt : 'Please enter a password'
+          },
+          {
+            type   : 'minLength[6]',
+            prompt : 'Your password must be at least {ruleValue} characters'
+          }
+        ]
+      }
+
+    }
+  })
+;
+</script>
+
+
+<script type="text/javascript">
+  
+$('.ui form')
+  .form({
+    on: 'blur',
+    fields: {
+      match: {
+        identifier  : 'confirm_password',
+        rules: [
+          {
+            type   : 'match[password]',
+            prompt : 'The Passwords dont match'
+          }
+        ]
+      },
+   
+    }
+  })
+;
+
+</script>
+
+
+{% endblock %}

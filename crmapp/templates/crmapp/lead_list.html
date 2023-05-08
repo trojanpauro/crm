@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+{% include "crmapp/datatables.html" %}
+
+
+{% load static %}
+
+<a class="ui blue button " id="" href="{% url 'lead_create'%}" >Add A Lead </a>  
+
+
+	<div class="container">
+
+	<div class="ui hidden divider"></div>
+
+        <h3 class="ui block header  center aligned  ">
+
+ <div class="eight wide column"> Sales Leads</div>
+
+      
+		  </h3>
+
+
+
+		<section>
+
+			<div class="demo-html"></div>
+			<table id="example" class="ui celled table" style="width:100%">
+				<thead>
+
+
+
+					<tr>
+						<th>Customer</th>
+						<th>Intrested </th>
+						<th>State</th>
+						<th>Date Added</th>
+						<th>Agent</th>
+						<th>View</th>
+					</tr>
+				</thead>
+				<tbody>
+
+          {% if lead_list %}
+    {% for lead in lead_list %}
+					<tr>
+						<td>{{ lead.customer}}</td>
+						<td>	{% for product in  lead.intrested_in.all %}
+
+                            {{product}},
+
+
+							{% endfor %}
+						</td>
+						<td>{{ lead.state}}</td>
+						<td>{{ lead.date_added}}</td>
+						<td >{{lead.elevator}}</td>
+						<td >
+<a class="ui red icon button" href="{% url 'lead_delete' lead.id %}">
+  <i class="trash icon"></i>
+</a>
+
+
+<a class="ui olive icon button" href="{% url 'lead_detail' lead.id %}">
+  <i class="eye icon"></i>
+</a>
+
+
+<a href="{% url 'lead_update' lead.id %}" class="ui green icon button"><i class="pencil alternate icon"></i></a></td>
+					</tr>
+
+
+
+			
+
+    {% endfor %}
+
+
+{% else %}
+    <p>Empty</p>
+{% endif %}
+
+				</tfoot>
+			</table>
+
+
+
+     
+       
+      
+
+
+    </section>
+</div>
+{% endblock %}

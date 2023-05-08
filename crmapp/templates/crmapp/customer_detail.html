@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+
+
+<a class="ui pink icon button" href="{% url 'customer_update'  object.id %}">
+	
+	 <i class="pencil icon"></i>
+</a>
+
+
+<p>Customer Name: {{ object.first_name}} {{ object.last_name }}</p>
+<p>Intrests: {{ object.intrests.all}}</p>
+<p>Phone: {{ object.phone}}</p>
+<p>Email: {{ object.email}}</p>
+
+
+
+
+
+
+<a class="ui teal button " href={% url 'customer_ticket_list' object.id %} >Tickets</a>  
+
+<a class="ui  purple button" id="add_invoice" href={% url 'customer_message_list' object.id %}  >Messages</a>
+
+
+
+ 
+{% endblock %}

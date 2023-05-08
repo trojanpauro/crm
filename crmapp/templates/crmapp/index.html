@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% load humanize %}
+ 
+<div class="ui  three stackable cards">
+	
+<div class="card">
+
+
+  
+	<div class="content">
+		
+		<table class="ui red table">
+  <thead>
+    <tr><th>Notifications</th>
+    	<th></th>
+  
+  </tr></thead><tbody>
+
+
+                {% if notifications %}
+    {% for notification in notifications %}
+        
+    <tr>
+      <td>{{notification.notification}} <span class="meta">{{notification.date_added |naturaltime}}</span></td>
+      <td> <button class="ui blue button" >VIEW</button> </td>
+     
+    </tr>
+
+    {% endfor %}
+
+
+    {% endif %}
+
+
+  </tbody>
+</table>
+	</div>
+
+</div>
+
+<div class="card">
+	<div class="content">
+		<h3 class="ui header">Messages</h3>
+
+		<div class="ui feed">
+
+
+                {% if messages %}
+    {% for message in messages %}
+            <div class="event">
+    <div class="label">
+      <i class="ui envelope  icon"></i>
+    </div>
+    <div class="content">
+      <div class="summary">
+        {{message.body}}
+        <div class="date">
+          {{message.date_added |naturaltime}}
+        </div>
+      </div>
+     
+      <div class="meta">
+        <a class="like">
+          <i class="check icon"></i> {{message.status}}
+        </a>
+      </div>
+    </div>
+  </div>
+
+
+
+
+    {% endfor %}
+
+
+    {% endif %}
+
+
+		</div>
+
+
+
+	</div>
+	
+
+</div>
+<div class="card">
+
+  <div class="content">
+    
+    <table class="ui red table">
+  <thead>
+    <tr><th>Tickets</th>
+      <th></th>
+  
+  </tr></thead><tbody>
+
+             {% if tickets %}
+    {% for ticket in tickets %}
+        
+    <tr>
+      <td>{{ticket.tittle}} <span class="meta">{{ticket.date_added |naturaltime}}</span></td>
+      <td> <a  href="{% url 'ticket_detail' ticket.id %}" class="ui blue button" >VIEW</a> </td>
+     
+    </tr>
+
+    {% endfor %}
+
+
+    {% endif %}
+
+
+
+      </tbody>
+
+  
+</table>
+
+
+
+ <a href="/tickets/all" class="ui blue button">More</a>
+	</div>
+</div>
+<div class="card"><div class="content">
+		<h3 class="ui header">Leads</h3>
+	</div>
+</div>
+
+<div class="card">
+<div class="content">
+		<h3 class="ui header">Faults</h3>
+	</div>
+</div>
+
+<div class="card">
+	
+	<div class="content">
+		<h3 class="ui header">Notifications</h3>
+	</div>
+</div>
+</div>
+   
+
+
+{% endblock %}

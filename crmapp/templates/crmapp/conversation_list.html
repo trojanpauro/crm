@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+{% include "crmapp/datatables.html" %}
+
+
+{% load static %}
+  
+
+
+	<div class="container">
+
+	<div class="ui hidden divider"></div>
+
+        <h3 class="ui block header  center aligned  ">
+
+ <div class="eight wide column"> Conversations</div>
+
+      
+		  </h3>
+
+
+
+		<section>
+
+			<div class="demo-html"></div>
+			<table id="example" class="ui celled table" style="width:100%">
+				<thead>
+
+
+					<tr>
+						<th>Customer</th>
+						<th>Category </th>
+						<th>State</th>
+						<th>Agents</th>
+						<th>Rating</th>
+						<th>View</th>
+					</tr>
+				</thead>
+				<tbody>
+
+          {% if conversation_list %}
+    {% for conversation in conversation_list %}
+					<tr>
+						<td>{{ conversation.customer}}</td>
+						<td>{{ conversation.category}}</td>
+						<td>{{ conversation.status}}</td>
+						<td >{{conversation.agents}}</td>
+						<td >{{conversation.rating}}</td>
+						<td >
+<a class="ui red icon button" href="{% url 'conversation_delete' conversation.id %}">
+  <i class="trash icon"></i>
+</a>
+
+
+<a class="ui olive icon button" href="{% url 'conversation_detail' conversation.id %}">
+  <i class="eye icon"></i>
+</a>
+
+
+<a href="{% url 'conversation_update' conversation.id %}" class="ui green icon button"><i class="pencil alternate icon"></i></a></td>
+					</tr>
+
+
+
+			
+
+    {% endfor %}
+
+
+{% else %}
+    <p>Empty</p>
+{% endif %}
+
+				</tfoot>
+			</table>
+
+
+
+     
+       
+      
+
+
+    </section>
+</div>
+{% endblock %}

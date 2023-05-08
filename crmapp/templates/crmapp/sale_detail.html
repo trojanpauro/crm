@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+
+
+<a class="ui pink icon button" href="{% url 'sale_update'  object.id %}">
+	
+	 <i class="pencil icon"></i>
+</a>
+
+
+<p>Transaction Date:  {{ object.transaction_date }}</p>
+<p>Customer: {{ object.customer }} </p>
+<p>Product: {{ object.product }} </p>
+
+
+
+
+
+
+
+
+<a class="ui purple button " href='/sales/all/' >Sales</a>  
+
+
+
+
+
+ 
+{% endblock %}

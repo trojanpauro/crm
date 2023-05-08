@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+<div class="ui tiny modal" id="customer_modal">
+  <div class="header"> Contact Details</div>
+  <div class="content">
+     <form  class="ui form" method="post" id="customer_form"  data-href="{% url 'create_customer_json' %}">
+    {% csrf_token %}
+    {{ customer_form.as_p }}
+    <button type="submit" class="ui green button">Save</button>
+</form> 
+
+  </div>
+</div>
+
+
+
+
+
+<div class="ui comments">
+  <div class="mydiv">
+    
+  </div>
+
+  <form class="ui reply form" method="post" data-chat="/message/endpoint/" id="message_form">
+
+  {% csrf_token %}
+    <div class="field">
+      <textarea name="message"></textarea>
+    </div>
+    <button class="ui blue  labeled icon button compact" id="send_message" type="button">
+      <i class="icon send"></i> Send
+    </button>
+  </form>
+</div>
+
+
+<script type="text/javascript">
+
+
+
+$("#send_message").click(function (e) {
+	$('#customer_modal').modal('show');
+	
+})
+	
+$("#message_form").submit(function(e) {
+		 // avoid to execute the actual submit of the form.
+		e.preventDefault();
+		var form = $('#message_form');
+			$.ajax({
+				url: form.attr("data-chat"),
+				data: form.serialize(),
+				csrfmiddlewaretoken: '{{ csrf_token }}',
+				type: 'post',
+				dataType: 'json',
+				success: function (data) {
+				
+		$('.mydiv').append('<div class="comment"><a class="avatar"><img src="../images/avatar/small/joe.jpg"> </a><div class="content"><a class="author">'+data['user']+'</a><div class="metadata"><div class="date">'+data['time']+'</div></div><div class="text"><p>'+data['message']+'</p></div></div></div>');
+
+		
+
+						},
+
+					error:function(){
+					alert("zvaramba");
+				},
+
+				complete:function(){
+							console.log("complete")
+						}
+			});
+
+
+		});
+
+
+
+
+$("#customer_form").submit(function(e) {
+		 // avoid to execute the actual submit of the form.
+		e.preventDefault();
+		var form = $('#customer_form');
+			$.ajax({
+				url: form.attr("data-href"),
+				data: form.serialize(),
+				csrfmiddlewaretoken: '{{ csrf_token }}',
+				type: 'post',
+				dataType: 'json',
+				success: function (data) {
+					$('#customer_modal').modal('hide');
+					$("#message_form").submit()
+					window.location.replace(data['url']);
+					
+				},
+
+					error:function(){
+					alert("zvaramba");
+				},
+
+				complete:function(){
+							console.log("complete")
+						}
+			});
+
+
+		});
+
+
+
+</script>
+
+
+
+
+  </script>
+
+{% endblock %}
