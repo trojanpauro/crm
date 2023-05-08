@@ -25,7 +25,7 @@ SECRET_KEY = 'nean=!or3$1$eb!#)26us&c&4wb2el!fa5e#z3#pifud1@3!rc'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['leloma.pythonanywhere.com']
 
 
 # Application definition
@@ -114,6 +114,8 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 
 # Static files (CSS, JavaScript, Images)
