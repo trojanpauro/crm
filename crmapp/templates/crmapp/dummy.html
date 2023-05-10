@@ -7,9 +7,20 @@
   <div class="header"> Contact Details</div>
   <div class="content">
      <form  class="ui form" method="post" id="customer_form"  data-href="{% url 'create_customer_json' %}">
+
+
+
     {% csrf_token %}
     {{ customer_form.as_p }}
-    <button type="submit" class="ui green button">Save</button>
+
+
+
+ <button type="submit" class="ui green button">Save</button>
+
+
+
+
+   
 </form> 
 
   </div>
@@ -20,7 +31,23 @@
 
 
 <div class="ui comments">
-  <div class="mydiv">
+
+{% if message_list %}
+
+
+{% for message in message_list%}
+<div class="comment">
+         			<a class="avatar"><img src="../images/avatar/small/joe.jpg"> </a>
+					<div class="content"><a class="author">{{message.user}}</a>
+					<div class="metadata"><div class="date">{{message.time}}</div></div>
+					<div class="text"><p>{{message.message}}</p></div></div></div>`)
+
+{% endfor %}
+
+
+{%  endif %}
+
+  <div class="mydiv" id="chat">
     
   </div>
 
@@ -30,21 +57,61 @@
     <div class="field">
       <textarea name="message"></textarea>
     </div>
-    <button class="ui blue  labeled icon button compact" id="send_message" type="button">
+
+
+    {% if is_new %}
+    
+   <button class="ui blue  labeled icon button compact" type="button" id="add_user">
       <i class="icon send"></i> Send
     </button>
+
+{% else %} 
+
+    <button class="ui blue  labeled icon button compact"  type="submit">
+      <i class="icon send"></i> Send
+    </button>
+
+
+{% endif %}
+
+
+
+
   </form>
 </div>
 
 
 <script type="text/javascript">
 
+{% if is_new %}
 
-
-$("#send_message").click(function (e) {
+$("#add_user").click(function (e) {
 	$('#customer_modal').modal('show');
 	
 })
+
+{% endif %}
+
+const receiveEndpoint = 'recieve';
+// Query endpoint for new messages
+setInterval(() => {
+  fetch(receiveEndpoint)
+    .then(response => response.json())
+    .then(messages => {
+      // Update chat with new messages
+      chat.innerHTML = messages['data'].map(message => `
+        			<div class="comment">
+         			<a class="avatar"><img src="../images/avatar/small/joe.jpg"> </a>
+					<div class="content"><a class="author">${message.user}</a>
+					<div class="metadata"><div class="date">${message.time}</div></div>
+					<div class="text"><p>${message.message}</p></div></div></div>`).join('');
+    });
+}, 10000);
+
+
+
+
+
 	
 $("#message_form").submit(function(e) {
 		 // avoid to execute the actual submit of the form.
@@ -58,8 +125,8 @@ $("#message_form").submit(function(e) {
 				dataType: 'json',
 				success: function (data) {
 				
-		$('.mydiv').append('<div class="comment"><a class="avatar"><img src="../images/avatar/small/joe.jpg"> </a><div class="content"><a class="author">'+data['user']+'</a><div class="metadata"><div class="date">'+data['time']+'</div></div><div class="text"><p>'+data['message']+'</p></div></div></div>');
-
+		
+						console.log('message sent');
 		
 
 						},

@@ -11,7 +11,7 @@ lead_states=[
 ('prospect','prospect'),
 ('qualified_lead','qualified_lead'),
 ('pitch','pitch'),
-('objection_handling','objection_handling'),
+('closing','closing'),
 ('nurturing','nurturing')
 
 ]
@@ -199,7 +199,7 @@ class Notification(models.Model):
 	lead = models.ForeignKey(Lead, on_delete=models.PROTECT)
 
 	def __str__(self):
-			return "to:" +self.to +" message:"+ self.notification
+			return "to:" +str(self.departments) +" message:"+ self.notification
 
 
 	def get_absolute_url(self):
@@ -254,6 +254,8 @@ class Sale(models.Model):
 
 	def __str__(self):
 			return "Product:" +self.product.name +"   Customer:"+str(self.customer)
+
+
 
 
 

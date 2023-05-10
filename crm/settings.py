@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['leloma.pythonanywhere.com']
 
-
+#ALLOWED_HOSTS=[]
 # Application definition
 
 INSTALLED_APPS = [

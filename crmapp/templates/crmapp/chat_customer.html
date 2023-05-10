@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+<style type="text/css">
+
+.ui.form {
+  margin-bottom: 20px;
+}
+
+/* Style the chat area */
+.ui.comments {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+/* Style individual messages */
+.ui.comments .comment {
+  margin-bottom: 10px;
+}
+.ui.comments .comment:last-child {
+  margin-bottom: 0;
+}
+.ui.comments .comment .author {
+  font-weight: bold;
+}
+
+
+
+</style>
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+  <div class="ui container">
+
+<div class="ui form">
+  <div class="field">
+    <label>Message</label>
+    <input type="text" id="messageInput">
+  </div>
+  <button class="ui button" id="sendButton">Send</button>
+</div>
+<div class="ui comments" id="chat">
+</div>
+
+
+
+  
+  </div>
+
+
+
+
+</body>
+
+
+  <script>
+// JavaScript
+const userId = 'YOUR_USER_ID';
+const sendEndpoint = 'SEND_ENDPOINT_URL';
+const receiveEndpoint = 'recieve';
+
+const messageInput = document.querySelector('#messageInput');
+const sendButton = document.querySelector('#sendButton');
+const chat = document.querySelector('#chat');
+
+sendButton.addEventListener('click', () => {
+  const message = messageInput.value;
+  messageInput.value = '';
+
+  // Send message to endpoint
+  fetch(sendEndpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ userId, message })
+  });
+});
+
+// Query endpoint for new messages
+setInterval(() => {
+  fetch(receiveEndpoint)
+    .then(response => response.json())
+    .then(messages => {
+      // Update chat with new messages
+      chat.innerHTML = messages['data'].map(message => `
+        <div class="comment">
+          <div class="content">
+            <a class="author">${message.user}</a>
+            <div class="text">${message.message}</div>
+          </div>
+        </div>
+      `).join('');
+    });
+}, 1000);
+
+
+
+
+  </script>
+</html>
+
+
+
+
+
+
+    

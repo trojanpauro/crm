@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import Conversation,Customer,Agent
-from .models import Message,Lead,Intrest,Department,Product
+from .models import Message,Lead,Intrest,Department,Product,Sale
 from .models import Notification,Ticket
 
 
@@ -18,3 +18,4 @@ admin.site.register(Department)
 admin.site.register(Product)
 admin.site.register(Notification)
 admin.site.register(Ticket)
+admin.site.register(Sale)

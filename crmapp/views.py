@@ -37,24 +37,9 @@ def index(request):
 	except IndexError:
 		notifications =Notification.objects.all()
 
-
-
-
-
-
-	
 	
 	context={'messages':messages,'notifications':notifications,'tickets':tickets}
 	return HttpResponse(template.render(context,request))	
-
-
-
-def testbed(request,conversation_id):
-	template=loader.get_template('crmapp/dummy.html')
-	customer_form = CustomerForm()
-	context={'customer_form':customer_form}
-
-	return HttpResponse(template.render(context,request))   
 
 def get_session_key(request):
 	session_key=request.session.session_key
@@ -65,13 +50,65 @@ def get_session_key(request):
 		sek=request.session.session_key
 		return sek
 
+
+
+
+
+
+
+def check_for_mine(request):
+
+
+	if request.user.is_authenticated:
+		messages = Message.objects.filter(status='sent',message_to=request.user.id)
+	else:
+		session_key = get_session_key(request)
+		messages = Message.objects.filter(status='sent',conversation__session_key=session_key)
+		
+	data_list=[]
+	for message in messages:
+		time=naturaltime(message.date_added)
+		data_list.append({'user':message.message_from.first_name,
+						'message':message.body,
+						'time':time})
+	
+	data ={'data':data_list}
+	return JsonResponse(data)
+
+
+def testbed(request,conversation_id):
+
+	if (conversation_id == 'new'):
+		session_key =get_session_key(request)
+		messages = Message.objects.filter(conversation__session_key=session_key)
+		for message in messages:
+			message.status = 'read'
+			message.save(update_fields=['status'])
+		if (len(messages)>1):
+			is_new =False
+		else :
+			is_new = True
+		context ={'is_new':is_new,'messages':messages}
+	elif(conversation_id == 'recieve'):
+		my_response = check_for_mine(request)
+		return my_response
+	else :
+		my_response = check_for_mine(request)
+		context={}
+	template=loader.get_template('crmapp/dummy.html')
+	customer_form = CustomerForm()
+	context['customer_form']=customer_form
+
+	return HttpResponse(template.render(context,request))   
+
+
+
 def message_endpoint(request):
 
 	session_key=get_session_key(request)
 	message = request.POST['message']
 	try:
 	   conversation = Conversation.objects.get(session_key=session_key)
-
 	except ObjectDoesNotExist:
 		print("no coversation")
 
@@ -237,12 +274,6 @@ def Tickethandler(request,slug):
 		ticket_list = Ticket.objects.filter(status=slug)
 	context = {'ticket_list':ticket_list}
 
-
-	
-
-
-
-
 	return HttpResponse(template.render(context,request)) 
 
 
@@ -315,8 +346,13 @@ class MessageDetailView(DetailView):
 def Leadhandler(request,slug):
 
 	template=loader.get_template('crmapp/lead_list.html')
-	lead_list = Lead.objects.all()
+
+	if slug == "all":
+		lead_list=Lead.objects.all()
+	else:
+		lead_list = Lead.objects.filter(state=slug)
 	context = {'lead_list':lead_list}
+
 	return HttpResponse(template.render(context,request)) 
 	
 
@@ -365,8 +401,12 @@ class SaleDetailView(DetailView):
 
 def Conversationhandler(request,slug):
 	template=loader.get_template('crmapp/conversation_list.html')
-	conversation_list = Conversation.objects.all()
+	if slug == "all":
+		conversation_list=Conversation.objects.all()
+	else:
+		conversation_list = Lead.objects.filter(conversation_status=slug)
 	context = {'conversation_list':conversation_list}
+	
 	return HttpResponse(template.render(context,request)) 
 
 class ConversationDeleteView(DeleteView):
@@ -387,11 +427,89 @@ class ConversationDetailView(DetailView):
 
 
 
+def chat(request):
+	template = loader.get_template('crmapp/chat_customer.html')
+	context = {}
+	return HttpResponse(template.render(context,request)) 
 
 
 
-		
 
+	
+# Import the required modules
+import requests
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 
+# Define the access token and the verify token for the Facebook app
+ACCESS_TOKEN = "YOUR_ACCESS_TOKEN"
+VERIFY_TOKEN = "YOUR_VERIFY_TOKEN"
+
+# Define a function to handle GET requests
+@csrf_exempt
+def webhook(request):
+    # Check if the request is a GET request
+    if request.method == "GET":
+        # Get the query parameters
+        mode = request.GET.get("hub.mode")
+        token = request.GET.get("hub.verify_token")
+        challenge = request.GET.get("hub.challenge")
+        # Verify the token and return the challenge
+        if mode == "subscribe" and token == VERIFY_TOKEN:
+            return HttpResponse(challenge)
+        else:
+            return HttpResponse("Invalid verification token")
+    # Check if the request is a POST request
+    elif request.method == "POST":
+        # Get the request body as JSON
+        data = request.json()
+        # Check if the data contains an entry object
+        if data.get("object") == "page":
+            # Loop through each entry object
+            for entry in data.get("entry"):
+                # Get the message object
+                message = entry.get("messaging")[0]
+                # Check if the message contains a sender id and a text
+                if message.get("sender") and message.get("message"):
+                    # Get the sender id and the text
+                    sender_id = message.get("sender").get("id")
+                    text = message.get("message").get("text")
+                    # Call a function to process the text and generate a reply
+                    reply = process_text(text)
+                    # Call a function to send the reply to the sender
+                    send_message(sender_id, reply)
+        return HttpResponse("OK")
+
+# Define a function to process the text and generate a reply
+def process_text(text):
+    # This is where you can write your own logic to process the text and generate a reply
+    # For example, you can use natural language processing, machine learning, or any other technique
+    # For simplicity, we will just echo back the text with some modification
+    reply = "You said: " + text.upper()
+    return reply
+
+# Define a function to send the reply to the sender
+def send_message(sender_id, reply):
+    # Prepare the payload for the request
+    payload = {
+        "recipient": {
+            "id": sender_id
+        },
+        "message": {
+            "text": reply
+        }
+    }
+    # Prepare the headers for the request
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + ACCESS_TOKEN
+    }
+    # Send a POST request to the Facebook Graph API
+    response = requests.post("https://graph.facebook.com/v12.0/me/messages", json=payload, headers=headers)
+    # Check if the response is successful
+    if response.status_code == 200:
+        print("Message sent successfully")
+    else:
+        print("Message failed to send")
 
 

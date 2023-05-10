@@ -12,6 +12,8 @@ urlpatterns = [
     path('chat/testbed/<str:conversation_id>',views.testbed,name='testbed'),
     path('message/endpoint/',views.message_endpoint,name='message_endpoint'),
     path('create/customer/json',views.customer_create_json,name='create_customer_json'),
+    path('chat/customers/',views.chat,name='user_chat'),
+    path('chat/customers/recieve',views.check_for_mine,name='check_for_mine'),
 
 
 
