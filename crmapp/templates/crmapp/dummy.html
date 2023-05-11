@@ -38,9 +38,9 @@
 {% for message in message_list%}
 <div class="comment">
          			<a class="avatar"><img src="../images/avatar/small/joe.jpg"> </a>
-					<div class="content"><a class="author">{{message.user}}</a>
-					<div class="metadata"><div class="date">{{message.time}}</div></div>
-					<div class="text"><p>{{message.message}}</p></div></div></div>`)
+					<div class="content"><a class="author">{{message.message_from}}</a>
+					<div class="metadata"><div class="date">{{message.date_added}}</div></div>
+					<div class="text"><p>{{message.body}}</p></div></div></div>
 
 {% endfor %}
 
@@ -57,6 +57,9 @@
     <div class="field">
       <textarea name="message"></textarea>
     </div>
+
+
+    <input type="text" name="conversation_id" id="conversation_id" value="{{conversation_id}}">
 
 
     {% if is_new %}
@@ -90,7 +93,13 @@ $("#add_user").click(function (e) {
 	
 })
 
+
+
+
+
 {% endif %}
+
+
 
 const receiveEndpoint = 'recieve';
 // Query endpoint for new messages
@@ -124,12 +133,20 @@ $("#message_form").submit(function(e) {
 				type: 'post',
 				dataType: 'json',
 				success: function (data) {
-				
-		
-						console.log('message sent');
-		
 
-						},
+				message=data['message']
+				
+				var literal =`
+        			<div class="comment">
+         			<a class="avatar"><img src="../images/avatar/small/joe.jpg"> </a>
+					<div class="content"><a class="author">${message}</a>
+					<div class="metadata"><div class="date">${message}</div></div>
+					<div class="text"><p>${message}</p></div></div></div>`
+		
+					$('#chat').append(literal);
+		
+					console.log(message)
+					},
 
 					error:function(){
 					alert("zvaramba");

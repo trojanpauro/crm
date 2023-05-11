@@ -41,15 +41,27 @@
 </div>
 
 <div class="card">
-	<div class="content">
-		<h3 class="ui header">Messages</h3>
 
-		<div class="ui feed">
-
+  <div class="content">
+    
+    <table class="ui purple table">
+  <thead>
+    <tr><th>Messages</th>
+      <th></th>
+   
+  
+  </tr></thead><tbody>
 
                 {% if messages %}
     {% for message in messages %}
-            <div class="event">
+
+
+    <tr>
+
+      <a href="/messages">
+
+   <td>
+    <div class="event">
     <div class="label">
       <i class="ui envelope  icon"></i>
     </div>
@@ -69,6 +81,24 @@
     </div>
   </div>
 
+</td>
+
+
+<td>
+  
+
+  <a class="ui blue button"  href="{%url 'testbed' message.conversation.session_key%}">View</a>
+</td>
+
+      </a>
+
+
+
+
+   
+    </tr>
+        
+
 
 
 
@@ -78,14 +108,13 @@
     {% endif %}
 
 
-		</div>
-
+  </tbody>
+</table>
+  </div>
 
 
 	</div>
 	
-
-</div>
 <div class="card">
 
   <div class="content">

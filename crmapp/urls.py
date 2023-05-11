@@ -65,6 +65,7 @@ urlpatterns = [
 	path('conversation/delete/<str:pk>' ,views.ConversationDeleteView.as_view(),name='conversation_delete'),
 	path('conversation/update/<str:pk>', views.ConversationUpdateView.as_view(),name='conversation_update'),
 	path('conversation/create', views.ConversationCreateView.as_view(),name='conversation_create'),
+#	path('conversation/chat/<str:conversation_id>', views.conversation_chat,name='conversation_chat'),
 
 
 

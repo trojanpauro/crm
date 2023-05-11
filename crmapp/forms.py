@@ -13,7 +13,6 @@ class SignUpForm(forms.Form):
 	phone_number=forms.CharField(label='phone_number', max_length=128)
 	confirm_password=forms.CharField(label='confirm_password', max_length=128)
 	role=forms.CharField(label='role', max_length=128)
-	address=forms.CharField(label='address', max_length=128)
 	town=forms.CharField(label='town', max_length=128)
 
 

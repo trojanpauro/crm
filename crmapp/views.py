@@ -21,9 +21,9 @@ from .models import Customer,Ticket,Message,Lead,Sale,Conversation,Agent,Ticket,
 def index(request):
 	template=loader.get_template('crmapp/index.html')
 	try:
-		messages = Message.objects.all().reverse()[:5]
+		messages = Message.objects.all().order_by('date_added').reverse()[:3]
 	except IndexError:
-		messages = Message.objects.all()
+		messages = Message.objects.all().order_by('date_added')
 
 
 	try:
@@ -60,7 +60,9 @@ def check_for_mine(request):
 
 
 	if request.user.is_authenticated:
-		messages = Message.objects.filter(status='sent',message_to=request.user.id)
+		user = request.user
+		agent = Agent.objects.get(user_id=user.id)
+		messages = Message.objects.filter(status='sent',message_to=agent)
 	else:
 		session_key = get_session_key(request)
 		messages = Message.objects.filter(status='sent',conversation__session_key=session_key)
@@ -75,6 +77,18 @@ def check_for_mine(request):
 	data ={'data':data_list}
 	return JsonResponse(data)
 
+
+def get_unread(session_key):
+	messages = Message.objects.filter(status='sent',conversation__session_key=session_key)		
+	data_list=[]
+	for message in messages:
+		time=naturaltime(message.date_added)
+		data_list.append({'user':message.message_from.first_name,
+						'message':message.body,
+						'time':time})
+	
+	data ={'data':data_list}
+	return data
 
 def testbed(request,conversation_id):
 
@@ -93,12 +107,16 @@ def testbed(request,conversation_id):
 		my_response = check_for_mine(request)
 		return my_response
 	else :
-		my_response = check_for_mine(request)
-		context={}
+		if request.user.is_authenticated:
+			messages = Message.objects.filter(status='sent',conversation__session_key=conversation_id)
+			context={'message_list':messages,'conversation_id':conversation_id}
+			print("hi")
+		else:
+			my_response = check_for_mine(request)
+			context={'my_response':my_response}
 	template=loader.get_template('crmapp/dummy.html')
 	customer_form = CustomerForm()
 	context['customer_form']=customer_form
-
 	return HttpResponse(template.render(context,request))   
 
 
@@ -107,6 +125,7 @@ def message_endpoint(request):
 
 	session_key=get_session_key(request)
 	message = request.POST['message']
+	chat_session = request.POST['conversation_id']
 	try:
 	   conversation = Conversation.objects.get(session_key=session_key)
 	except ObjectDoesNotExist:
@@ -122,7 +141,7 @@ def message_endpoint(request):
 		reply = False
  
 	if reply:
-
+		conversation = Conversation.objects.get(session_key=chat_session)
 		message = Message(conversation=conversation,
 							message_to=conversation.customer,
 							message_from=agent,
@@ -220,6 +239,8 @@ def register(request):
 	except IntegrityError:
 		messages.add_message(request, messages.ERROR, 'Email Is already in use reset password if you forgot')
 		return redirect('login')
+
+		
 def authentication(request):
 	if request.method == 'POST':
 		form = SignInForm(request.POST)
@@ -248,7 +269,7 @@ def Customerhandler(request,slug):
 
 class CustomerDeleteView(DeleteView):
 	model = Customer 
-	success_url='/customers/'
+	success_url='/customers/all'
 
 
 class CustomerCreateView(CreateView):
@@ -288,7 +309,7 @@ class CategoryTicketListView(ListView):
 
 class TicketDeleteView(DeleteView):
 	model = Ticket 
-	success_url='/tickets/'
+	success_url='/tickets/all'
 
 
 class TicketCreateView(CreateView):
@@ -329,7 +350,7 @@ class CategoryMessageListView(ListView):
 
 class MessageDeleteView(DeleteView):
 	model = Message 
-	success_url='/messages/'
+	success_url='/messages/all'
 
 
 class MessageCreateView(CreateView):
@@ -358,7 +379,7 @@ def Leadhandler(request,slug):
 
 class LeadDeleteView(DeleteView):
 	model = Lead 
-	success_url='/leads/'
+	success_url='/leads/all'
 
 
 class LeadCreateView(CreateView):
@@ -383,7 +404,7 @@ def Salehandler(request,slug):
 
 class SaleDeleteView(DeleteView):
 	model = Sale 
-	success_url='/sales/'
+	success_url='/sales/all'
 
 
 class SaleCreateView(CreateView):
@@ -433,7 +454,10 @@ def chat(request):
 	return HttpResponse(template.render(context,request)) 
 
 
-
+def conversation(request,conversation_id):
+	template = loader.get_template('crmapp/chat_customer.html')
+	context = {}
+	return HttpResponse(template.render(context,request)) 
 
 	
 # Import the required modules
