@@ -396,6 +396,11 @@ class NotificationCreateView(CreateView):
 	model = Notification
 	fields =['notification','departments','agents','conversation','ticket','lead']
 
+
+class NotificationUpdateView(UpdateView):
+	model = Notification
+	fields =['notification','departments','agents','conversation','ticket','lead']
+
 class MessageCreateView(CreateView):
 	model = Message
 	
