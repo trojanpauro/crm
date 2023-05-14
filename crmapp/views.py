@@ -8,7 +8,7 @@ from django.contrib.auth import authenticate,login,logout
 from django.db import IntegrityError
 from django.db.models import Sum
 from django.http import HttpResponse,JsonResponse
-from .forms import SignInForm,SignUpForm,CustomerForm
+from .forms import SignInForm,SignUpForm,CustomerForm,LeadForm,SaleForm,TicketForm,NotificationForm
 from django.contrib import messages
 from django.shortcuts import render ,redirect,get_object_or_404
 from django.contrib.auth.models import User 
@@ -56,67 +56,106 @@ def get_session_key(request):
 
 
 
-def check_for_mine(request):
+def check_for_mine(request,conversation_key):
 
 
 	if request.user.is_authenticated:
 		user = request.user
 		agent = Agent.objects.get(user_id=user.id)
-		messages = Message.objects.filter(status='sent',message_to=agent)
+		messages = Message.objects.filter(status='sent',conversation__session_key=conversation_key)
+		persona = agent
 	else:
 		session_key = get_session_key(request)
 		messages = Message.objects.filter(status='sent',conversation__session_key=session_key)
-		
+		if(messages):
+			persona = messages[0].conversation.conversation_customer
+	message_list = messages
 	data_list=[]
-	for message in messages:
+	for message in message_list:
 		time=naturaltime(message.date_added)
 		data_list.append({'user':message.message_from.first_name,
 						'message':message.body,
 						'time':time})
+
+		if message.message_from.id == persona.id:
+
+			print("is persona")
+			return JsonResponse({'data':[]})
+
+		else:
+			message.status='read'
+			message.save(update_fields=['status'])
+			print(persona)
+			print(message.message_from)
+			print("not persona")
 	
 	data ={'data':data_list}
+	print(data)
 	return JsonResponse(data)
 
 
 def get_unread(session_key):
-	messages = Message.objects.filter(status='sent',conversation__session_key=session_key)		
+	messages = Message.objects.filter(conversation__session_key=session_key)		
 	data_list=[]
 	for message in messages:
 		time=naturaltime(message.date_added)
-		data_list.append({'user':message.message_from.first_name,
+		data_list.append({'user':message.message_from.first_name+" "+message.message_from.last_name,
 						'message':message.body,
 						'time':time})
+
+		
 	
 	data ={'data':data_list}
 	return data
 
 def testbed(request,conversation_id):
-
+	#new message 
+	template=loader.get_template('crmapp/testbed.html')
 	if (conversation_id == 'new'):
 		session_key =get_session_key(request)
 		messages = Message.objects.filter(conversation__session_key=session_key)
-		for message in messages:
-			message.status = 'read'
-			message.save(update_fields=['status'])
-		if (len(messages)>1):
+		if (len(messages)>=1):
 			is_new =False
 		else :
 			is_new = True
 		context ={'is_new':is_new,'messages':messages}
-	elif(conversation_id == 'recieve'):
-		my_response = check_for_mine(request)
+		return HttpResponse(template.render(context,request))  
+
+
+	#json endpoint to recieve messages 
+
+	elif(conversation_id.endswith('recieve')):
+		conversation_id =conversation_id.replace('recieve','')
+		my_response = check_for_mine(request,conversation_id)
 		return my_response
+
+
+	#tesbed load 
 	else :
 		if request.user.is_authenticated:
-			messages = Message.objects.filter(status='sent',conversation__session_key=conversation_id)
-			context={'message_list':messages,'conversation_id':conversation_id}
+			messages = Message.objects.filter(conversation__session_key=conversation_id)
+			context={'message_list':messages}
+			agent = Agent.objects.get(user=request.user)
+			print(agent)
+			context['agent'] = agent
 			print("hi")
 		else:
-			my_response = check_for_mine(request)
-			context={'my_response':my_response}
-	template=loader.get_template('crmapp/dummy.html')
+			messages = Message.objects.filter(conversation__session_key=conversation_id)
+			context={'message_list':messages}
+	
 	customer_form = CustomerForm()
-	context['customer_form']=customer_form
+	lead_form = LeadForm()
+	ticket_form = TicketForm()
+	sale_form = SaleForm()
+	notification_form  = NotificationForm()
+	context['sale_form'] = sale_form
+	context['lead_form'] = lead_form
+	context['ticket_form'] = ticket_form
+	context['customer_form'] = customer_form
+	context['conversation_id'] = conversation_id
+	context['notification_form'] = notification_form
+	my_conversation=Conversation.objects.get(session_key=conversation_id)
+	context['conversation'] = my_conversation
 	return HttpResponse(template.render(context,request))   
 
 
@@ -143,13 +182,13 @@ def message_endpoint(request):
 	if reply:
 		conversation = Conversation.objects.get(session_key=chat_session)
 		message = Message(conversation=conversation,
-							message_to=conversation.customer,
+							message_to=conversation.conversation_customer,
 							message_from=agent,
 							body=message)
 
 	else:
 		message = Message(conversation=conversation,
-						message_from=conversation.customer,
+						message_from=conversation.conversation_customer,
 						body=message)
 		
 	message.save()
@@ -177,7 +216,7 @@ def customer_create_json(request):
 	try:
 	   conversation = Conversation.objects.get(session_key=session_key)
 	except ObjectDoesNotExist:
-		conversation = Conversation(customer=customer,session_key=session_key)
+		conversation = Conversation(conversation_customer=customer,session_key=session_key)
 		conversation.save()
 	data['message'] = customer.first_name	
 	another = request.build_absolute_uri('/')
@@ -317,7 +356,8 @@ class TicketCreateView(CreateView):
 	fields =[
 		'tittle',
 		'agents',
-		'department'
+		'department',
+		'ticket_customer'
 
 	]
 	
@@ -329,7 +369,8 @@ class TicketUpdateView(UpdateView):
 		'tittle',
 		'agents',
 		'department',
-		'status'
+		'status',
+		'ticket_customer'
 
 	]
 
@@ -351,7 +392,9 @@ class CategoryMessageListView(ListView):
 class MessageDeleteView(DeleteView):
 	model = Message 
 	success_url='/messages/all'
-
+class NotificationCreateView(CreateView):
+	model = Notification
+	fields =['notification','departments','agents','conversation','ticket','lead']
 
 class MessageCreateView(CreateView):
 	model = Message
@@ -361,7 +404,10 @@ class MessageUpdateView(UpdateView):
 	model = Message 
 
 class MessageDetailView(DetailView):
-	model = Lead
+	model = Message
+
+class NotificationDetailView(DetailView):
+	model = Notification
 
 
 def Leadhandler(request,slug):
@@ -384,12 +430,19 @@ class LeadDeleteView(DeleteView):
 
 class LeadCreateView(CreateView):
 	model = Lead
-	fields = ['note','customer','intrested_in','conversations','elevator' ,'state']
+	fields = [
+		'note',
+		'lead_customer',
+		'intrested_in',
+		'conversations',
+		'elevator' ,
+		'state'
+			]
 	
 
 class LeadUpdateView(UpdateView):
 	model = Lead 
-	fields = ['note','customer','intrested_in','conversations','elevator' ,'state']
+	fields = ['note','lead_customer','intrested_in','conversations','elevator' ,'state']
 
 class LeadDetailView(DetailView):
 	model = Lead
@@ -409,12 +462,12 @@ class SaleDeleteView(DeleteView):
 
 class SaleCreateView(CreateView):
 	model = Sale
-	fields =['transaction_date','product','customer']
+	fields =['transaction_date','product','sale_customer']
 	
 
 class SaleUpdateView(UpdateView):
 	model = Sale 
-	fields =['transaction_date','product','customer']
+	fields =['transaction_date','product','sale_customer']
 
 class SaleDetailView(DetailView):
 	model = Sale
@@ -425,7 +478,7 @@ def Conversationhandler(request,slug):
 	if slug == "all":
 		conversation_list=Conversation.objects.all()
 	else:
-		conversation_list = Lead.objects.filter(conversation_status=slug)
+		conversation_list = Conversation.objects.filter(status=slug)
 	context = {'conversation_list':conversation_list}
 	
 	return HttpResponse(template.render(context,request)) 

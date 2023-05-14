@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+
+
+<a class="ui pink icon button" href="{% url 'notification_update'  object.id %}">
+	
+	 <i class="pencil icon"></i>
+</a>
+
+
+<p>Customer:  {{ object.notification }}</p>
+<p>Note to Sales:  {{ object.note }}</p>
+
+
+
+<h3>Departments </h3>
+
+
+	{% for department in  object.departments.all %}
+
+                          <p>  {{department}}</p>
+
+
+							{% endfor %}
+<h3>Agents</h3>
+
+
+								{% for agent in  object.agents.all %}
+
+                        <p>    {{agent}}</p>
+
+
+							{% endfor %}
+
+
+
+
+
+ 
+
+<a class="ui purple button"  href={% url 'customer_message_list' object.lead_customer.id %}  >Messages</a>
+
+
+<a class="ui teal button"  href="/leads/all"  >Back To Leads</a>
+
+
+
+ 
+{% endblock %}

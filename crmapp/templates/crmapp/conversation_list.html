@@ -31,11 +31,9 @@
 
 					<tr>
 						<th>Customer</th>
-						<th>Category </th>
-						<th>State</th>
-						<th>Agents</th>
-						<th>Rating</th>
-						<th>View</th>
+					
+						
+						<th>Actions</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -43,16 +41,13 @@
           {% if conversation_list %}
     {% for conversation in conversation_list %}
 					<tr>
-						<td>{{ conversation.customer}}</td>
-						<td>{{ conversation.category}}</td>
-						<td>{{ conversation.status}}</td>
-						<td >{{conversation.agents}}</td>
-						<td >{{conversation.rating}}</td>
+						<td>{{ conversation.conversation_customer}}</td>
+					
 						<td >
 
 
 
-<a class="ui olive icon button" href="{% url 'conversation_detail' conversation.id %}">
+<a class="ui olive icon button" href="/chat/testbed/{{conversation.session_key}}">
   <i class="eye icon"></i>
 </a>
 

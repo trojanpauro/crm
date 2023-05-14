@@ -142,6 +142,7 @@ class Ticket(models.Model):
 	agents = models.ManyToManyField(Agent)
 	status =models.CharField(choices=ticket_status,max_length=20)
 	department = models.ManyToManyField(Department)
+	ticket_customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
 
 
 	def __str__(self):
@@ -157,14 +158,14 @@ class Conversation(models.Model):
 
 	date_added = models.DateTimeField(auto_now = True)
 	agents = models.ManyToManyField(Agent)
-	customer = models.ForeignKey(Customer, on_delete = models.PROTECT)
+	conversation_customer = models.ForeignKey(Customer, on_delete = models.PROTECT)
 	category = models.CharField(choices = conversation_category,max_length=50)
 	status = models.CharField(choices = conversation_status,max_length=50)
 	rating = models.IntegerField(null=True)
 	session_key = models.CharField(max_length=200)
 
 	def __str__(self):
-			return self.customer.first_name
+			return self.conversation_customer.first_name
 
 
 	def get_absolute_url(self):
@@ -173,7 +174,7 @@ class Conversation(models.Model):
 
 class Lead(models.Model):
 	note = models.CharField(max_length=100)
-	customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
+	lead_customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
 	conversations = models.ForeignKey(Conversation,on_delete=models.PROTECT)
 	elevator = models.ForeignKey(Agent, on_delete = models.PROTECT)
 	intrested_in = models.ManyToManyField(Product)
@@ -181,7 +182,7 @@ class Lead(models.Model):
 	state = models.CharField(choices=lead_states,max_length=30)
 
 	def __str__(self):
-			return self.conversations.customer.first_name + str(self.elevator)
+			return self.conversations.conversation_customer.first_name + str(self.elevator)
 
 
 	def get_absolute_url(self):
@@ -203,10 +204,10 @@ class Notification(models.Model):
 
 
 	def get_absolute_url(self):
-		return reverse('notificatioin_detail', kwargs={'pk': self.pk})
+		return reverse('notification_detail', kwargs={'pk': self.pk})
 
 class Subscriptions(models.Model):
-	customer = models.ForeignKey(Customer, on_delete = models.PROTECT)
+	subscription_customer = models.ForeignKey(Customer, on_delete = models.PROTECT)
 	date_added = models.DateTimeField(auto_now=True)
 
 	def get_absolute_url(self):
@@ -222,7 +223,7 @@ class Message(models.Model):
 	body = models.CharField(max_length=200)
 
 	def __str__(self):
-			return self.conversation.customer.first_name + "message: " +self.body
+			return self.conversation.conversation_customer.first_name + "message: " +self.body
 
 
 	def get_absolute_url(self):
@@ -244,7 +245,7 @@ class Message(models.Model):
 class Sale(models.Model):
 	transaction_date = models.DateField()
 	date_added = models.DateTimeField(auto_now=True)
-	customer = models.ForeignKey(Customer, on_delete = models.PROTECT)
+	sale_customer = models.ForeignKey(Customer, on_delete = models.PROTECT)
 	product = models.ForeignKey(Product, on_delete= models.PROTECT)
 
 
@@ -253,7 +254,7 @@ class Sale(models.Model):
 
 
 	def __str__(self):
-			return "Product:" +self.product.name +"   Customer:"+str(self.customer)
+			return "Product:" +self.product.name +"   Customer:"+str(self.sale_customer)
 
 
 

@@ -11,7 +11,7 @@
 </a>
 
 
-<p>Customer:  {{ object.customer }}</p>
+<p>Customer:  {{ object.lead_customer }}</p>
 <p>Note to Sales:  {{ object.note }}</p>
 
 
@@ -32,7 +32,7 @@
 
  
 
-<a class="ui purple button"  href={% url 'customer_message_list' object.customer.id %}  >Messages</a>
+<a class="ui purple button"  href={% url 'customer_message_list' object.lead_customer.id %}  >Messages</a>
 
 
 <a class="ui teal button"  href="/leads/all"  >Back To Leads</a>

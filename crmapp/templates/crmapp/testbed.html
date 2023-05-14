@@ -1,0 +1,375 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+<div class="ui tiny modal" id="customer_modal">
+  <div class="header"> Contact Details</div>
+  <div class="content">
+     <form  class="ui form" method="post" id="customer_form"  data-href="{% url 'create_customer_json' %}">
+
+
+
+    {% csrf_token %}
+    {{ customer_form.as_p }}
+
+
+
+ <button type="submit" class="ui green button">Save</button>
+
+
+
+
+   
+</form> 
+
+  </div>
+</div>
+
+
+
+
+<div class="ui tiny modal" id="lead_modal">
+  <div class="header">Add Lead</div>
+  <div class="content">
+     <form  class="ui form" method="post" id="lead_form"  action="{% url 'lead_create' %}">
+
+
+
+    {% csrf_token %}
+    {{ lead_form.as_p }}
+
+
+ <button type="submit" class="ui green button">Save</button>
+
+   
+</form> 
+
+  </div>
+</div>
+
+
+
+
+<div class="ui tiny modal" id="sale_modal">
+  <div class="header"> Add Sale</div>
+  <div class="content">
+     <form  class="ui form" method="post" id="sale_form"  action="{% url 'sale_create' %}">
+
+
+
+    {% csrf_token %}
+    {{ sale_form.as_p }}
+
+
+ <button type="submit" class="ui green button">Save</button>
+
+   
+</form> 
+
+  </div>
+</div>
+
+
+<div class="ui tiny modal" id="ticket_modal">
+  <div class="header"> Add Ticket  </div>
+  <div class="content">
+     <form  class="ui form" method="post" id="ticket_form"  action="{% url 'ticket_create' %}">
+
+
+
+    {% csrf_token %}
+    {{ ticket_form.as_p }}
+
+
+ <button type="submit" class="ui green button">Save</button>
+
+   
+</form> 
+
+  </div>
+</div>
+
+
+
+<div class="ui tiny modal" id="notification_modal">
+  <div class="header"> Add Notification</div>
+  <div class="content">
+     <form  class="ui form" method="post" id="notification_form"  action="{% url 'notification_create' %}">
+
+
+
+    {% csrf_token %}
+    {{ notification_form.as_p }}
+
+
+ <button type="submit" class="ui green button">Save</button>
+
+   
+</form> 
+
+  </div>
+</div>
+
+
+
+
+
+
+{% if request.user.is_authenticated %}
+
+<button class="ui teal button" id="lead_button">Make Lead </button>
+<button class="ui teal button" id="sale_button">Make Sale</button>
+<button class="ui teal button" id="ticket_button">Make Ticket</button>
+<button class="ui teal button" id="notification_button">Make Notification</button>
+
+{% endif%}
+
+
+<div class="ui comments">
+
+{% if message_list %}
+
+
+{% for message in message_list%}
+<div class="comment">
+         			<a class="avatar"><i class="circular inverted user icon" style="background-color:#1a0fa2!important "></i> </a>
+					<div class="content"><a class="author">{{message.message_from}}</a>
+					<div class="metadata"><div class="date">{{message.date_added}}</div></div>
+					<div class="text"><p>{{message.body}}</p></div></div></div>
+
+{% endfor %}
+
+
+{%  endif %}
+
+  <div class="mydiv" id="chat">
+    
+  </div>
+
+  <form class="ui reply form" method="post" data-chat="/message/endpoint/" id="message_form">
+
+  {% csrf_token %}
+    <div class="field">
+      <textarea name="message" id="message_text" value=''></textarea>
+    </div>
+
+
+    <input type="text" name="conversation_id" id="conversation_id" value="{{conversation_id}}" hidden>
+
+
+    {% if is_new %}
+    
+   <button class="ui blue  labeled icon button compact" type="button" id="add_user">
+      <i class="icon send"></i> Send
+    </button>
+
+{% else %} 
+
+    <button class="ui blue  labeled icon button compact"  type="submit">
+      <i class="icon send"></i> Send
+    </button>
+
+
+{% endif %}
+
+
+
+
+  </form>
+</div>
+
+
+<script type="text/javascript">
+
+
+$("#lead_button").click(function (e) {
+	$('#lead_modal').modal('show');
+	
+})
+
+
+
+$("#notification_button").click(function (e) {
+	$('#notification_modal').modal('show');
+	
+})
+
+
+$("#sale_button").click(function (e) {
+	$('#sale_modal').modal('show');
+	
+})
+
+
+$("#ticket_button").click(function (e) {
+	$('#ticket_modal').modal('show');
+	
+})
+
+
+
+{% if is_new %}
+
+$("#add_user").click(function (e) {
+	$('#customer_modal').modal('show');
+	
+})
+
+
+
+
+
+{% endif %}
+
+
+
+const receiveEndpoint = '{{conversation_id}}'+'recieve';
+// Query endpoint for new messages
+setInterval(() => {
+  fetch(receiveEndpoint)
+    .then(response => response.json())
+    .then(messages => {
+      // Update chat with new messages
+messages['data'].forEach(function(data){
+
+
+
+				var message=data['message']
+				var user =data['user']
+				var time = data['time']
+				var literal =`
+        			<div class="comment">
+         			<a class="avatar"><i class="circular inverted user icon" style="background-color:#1a0fa2!important "></i> </a>
+					<div class="content"><a class="author">${user}</a>
+					<div class="metadata"><div class="date">${time}</div></div>
+					<div class="text"><p>${message}</p></div></div></div>`
+		
+					$('#chat').append(literal);
+
+
+})
+
+
+      ;
+    });
+}, 10000);
+
+
+
+
+
+	
+$("#message_form").submit(function(e) {
+		 // avoid to execute the actual submit of the form.
+		e.preventDefault();
+		var form = $('#message_form');
+			$.ajax({
+				url: form.attr("data-chat"),
+				data: form.serialize(),
+				csrfmiddlewaretoken: '{{ csrf_token }}',
+				type: 'post',
+				dataType: 'json',
+				success: function (data) {
+
+				var message=data['message']
+				var user =data['user']
+				var time = data['time']
+				
+				var literal =`
+        			<div class="comment">
+         			<a class="avatar"><i class="circular inverted user icon" style="background-color:#1a0fa2!important "></i> </a>
+					<div class="content"><a class="author">${user}</a>
+					<div class="metadata"><div class="date">${time}</div></div>
+					<div class="text"><p>${message}</p></div></div></div>`
+		
+					$('#chat').append(literal);
+					
+					document.getElementById("message_text").value = "";
+		
+					console.log(message)
+					},
+
+					error:function(){
+					alert("zvaramba");
+				},
+
+				complete:function(){
+							console.log("complete")
+						}
+			});
+
+
+		});
+
+
+
+
+$("#customer_form").submit(function(e) {
+		 // avoid to execute the actual submit of the form.
+		e.preventDefault();
+		var form = $('#customer_form');
+			$.ajax({
+				url: form.attr("data-href"),
+				data: form.serialize(),
+				csrfmiddlewaretoken: '{{ csrf_token }}',
+				type: 'post',
+				dataType: 'json',
+				success: function (data) {
+					$('#customer_modal').modal('hide');
+					$("#message_form").submit()
+					window.location.replace(data['url']);
+					
+				},
+
+					error:function(){
+					alert("zvaramba");
+				},
+
+				complete:function(){
+							console.log("complete")
+						}
+			});
+
+
+		});
+
+
+
+</script>
+
+<script type="text/javascript">
+	
+ $( document ).ready( 
+ function() {
+
+
+$("#id_lead_customer").val('{{conversation.conversation_customer.id}}');
+$("#id_conversations").val('{{conversation.id}}');
+$("#id_elevator").val('{{agent.id}}');
+$("#id_sale_customer").val('{{conversation.conversation_customer.id}}');
+$("#id_ticket_customer").val('{{conversation.conversation_customer.id}}');
+
+
+
+$("#lead_form > p:nth-child(3)").hide();
+$("#lead_form > p:nth-child(5)").hide();
+$("#lead_form > p:nth-child(6)").hide();
+$("#sale_form > p:nth-child(4)").hide();
+$("#ticket_form > p:nth-child(6)").hide();
+$("#id_state").addClass("ui search selection fluid dropdown");
+$("#id_intrested_in").addClass("ui multiple search selection fluid dropdown");
+$("#id_agents").addClass("ui multiple search selection fluid dropdown");
+$("#id_department").addClass("ui multiple search selection fluid dropdown");
+$("#id_status").addClass("ui selection fluid dropdown");
+$("#id_transaction_date").attr("type",'date');
+$('.dropdown').dropdown();
+ 	  
+
+ 	   });
+
+
+
+
+</script>
+{% endblock %}

@@ -66,7 +66,9 @@ urlpatterns = [
 	path('conversation/update/<str:pk>', views.ConversationUpdateView.as_view(),name='conversation_update'),
 	path('conversation/create', views.ConversationCreateView.as_view(),name='conversation_create'),
 #	path('conversation/chat/<str:conversation_id>', views.conversation_chat,name='conversation_chat'),
-
+	path('notification/create', views.NotificationCreateView.as_view(),name='notification_create'),
+	path('notification/details/<str:pk>', views.NotificationDetailView.as_view(),name='notification_detail'),
+	path('notification/update/<str:pk>', views.NotificationUpdateView.as_view(),name='notification_update'),
 
 
 ]

@@ -1,5 +1,5 @@
 from django import forms  
-from .models import Customer   
+from .models import Customer,Lead,Sale,Ticket,Notification
 class SignInForm(forms.Form): 
 	username = forms.CharField(label='username', max_length=150) 
 	password=forms.CharField(label='password', max_length=128)
@@ -19,7 +19,51 @@ class SignUpForm(forms.Form):
 
 class CustomerForm(forms.ModelForm):
 	class Meta:
-		model=Customer
-		fields = ['first_name','last_name','email','phone','intrests']
+		model = Customer
+		fields = [
+			'first_name',
+			'last_name',
+			'email',
+			'phone',
+			'intrests']
+
+class LeadForm(forms.ModelForm):
+	class Meta:
+		model = Lead
+		fields = [
+			'note',
+			'lead_customer',
+			'intrested_in',
+			'conversations',
+			'elevator' ,
+			'state'
+			]
+
+class TicketForm(forms.ModelForm):
+	class Meta:
+		model = Ticket
+		fields =[
+			'tittle',
+			'agents',
+			'department',
+			'status',
+			'ticket_customer'
+				]
+
+class SaleForm(forms.ModelForm):
+	class Meta:
+		model = Sale
+		fields =[
+			'transaction_date',
+			'product',
+			'sale_customer']
+
+
+class NotificationForm(forms.ModelForm):
+	class Meta:
+		model = Notification
+		fields =['notification','departments','agents','conversation','ticket','lead']
+
+
 
      
