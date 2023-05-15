@@ -72,7 +72,7 @@ ticket_status = [
 
 
 class Department(models.Model):
-	name =models.CharField(max_length=50)
+	name = models.CharField(max_length=50)
 
 
 	def __str__(self):
@@ -129,7 +129,7 @@ class Customer(Persona):
 
 class Agent(Persona):
 	user = models.ForeignKey(User , on_delete = models.CASCADE)
-	staff_roles = models.CharField(choices = staff_roles,max_length=100)
+	staff_roles = models.CharField(choices = staff_roles,max_length=100,default='contact_center')
 	department = models.ForeignKey(Department, on_delete=models.PROTECT)
 
 
@@ -182,7 +182,7 @@ class Lead(models.Model):
 	state = models.CharField(choices=lead_states,max_length=30)
 
 	def __str__(self):
-			return self.conversations.conversation_customer.first_name + str(self.elevator)
+			return self.note + str(self.elevator)
 
 
 	def get_absolute_url(self):

@@ -15,6 +15,7 @@ from django.contrib.auth.models import User
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic import DetailView ,ListView
 from .models import Customer,Ticket,Message,Lead,Sale,Conversation,Agent,Ticket,Notification
+from .models import Department
 
 
 @login_required()
@@ -37,8 +38,17 @@ def index(request):
 	except IndexError:
 		notifications =Notification.objects.all()
 
+
 	
-	context={'messages':messages,'notifications':notifications,'tickets':tickets}
+	leads = Lead.objects.all().reverse()[5]
+	
+	print(leads)
+	
+	context={'messages':messages,
+			'notifications':notifications,
+			'tickets':tickets}
+
+	context['leads']=leads
 	return HttpResponse(template.render(context,request))	
 
 def get_session_key(request):
@@ -236,7 +246,8 @@ def login_page(request):
 def signup(request):
 
 	template = loader.get_template('crmapp/signup.html')
-	context = {}
+	departments = Department.objects.all()
+	context = {'departments':departments}
 	return HttpResponse(template.render(context, request))
 @login_required
 def logout_view(request):
@@ -252,32 +263,39 @@ def register(request):
 	
 	form = SignUpForm(request.POST)
 	if form.is_valid():
-		name=form.cleaned_data['name']
-		surname=form.cleaned_data['surname']
-		email=form.cleaned_data['email']
-		password=form.cleaned_data['password']
-		confirm_password=form.cleaned_data['confirm_password']
+		name = form.cleaned_data['name']
+		surname = form.cleaned_data['surname']
+		email = form.cleaned_data['email']
+		password = form.cleaned_data['password']
+		confirm_password = form.cleaned_data['confirm_password']
+		department_id = form.cleaned_data['department']
+		phone_number = form.cleaned_data['phone_number']
 	  
 	else:
 		print(form.errors)
-		messages.add_message(request, messages.ERROR, 'There was an error please try again')
-		return redirect('login')
+
+		for error in form.errors:
+			messages.add_message(request, messages.ERROR, error)
+		return redirect('sign_up')
 		
 	
 
 
 	try:
 		user = User.objects.create_user(email, email, password)
+		department = Department.objects.get(id=department_id)
 		user.first_name=name
 		user.last_name=surname
 		user.save()
+		agent =Agent(user=user,first_name=name,last_name=surname,department=department,email=email,phone=phone_number)
+		agent.save()
 		return redirect('login')
 
 
 
 	except IntegrityError:
 		messages.add_message(request, messages.ERROR, 'Email Is already in use reset password if you forgot')
-		return redirect('login')
+		return redirect('sign_up')
 
 		
 def authentication(request):

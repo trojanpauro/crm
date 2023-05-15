@@ -13,7 +13,16 @@ $( document ).ready(function() {
 
 </script>
 
+   {% if messages %}
+    {% for message in messages %}
+    <div class="ui info message">
+        
+      {{ message }}
+       
+    </div>
 
+      {% endfor %}
+{% endif %}
 
 
 
@@ -108,14 +117,15 @@ $( document ).ready(function() {
                             <div class="field">
                               <label>Department </label>
                                <div class="ui fluid selection dropdown" id="role-dropdown">
-                                <input  name="role" id="role"  type="hidden">
+                                <input  name="department" id="role"  type="hidden" required="true">
                                 <i class="dropdown icon"></i>
                                 <div class="default text">Role</div>
                                 <div class="menu">
-                                   <div class="item" data-value="sales">Sales</div>
-                                  <div class="item" data-value="marketing">Marketing</div>
-                                    <div class="item" data-value="engineering">Engineering</div>
-                                    <div class="item" data-value="customer_service">Customer Service</div>
+                                  
+                                
+                                  {% for department in departments %}
+                                    <div class="item" data-value="{{department.id}}">{{department.name}}</div>
+                                  {% endfor %}
 
                                
                               </div>

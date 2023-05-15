@@ -24,7 +24,7 @@
         
     <tr>
       <td>{{notification.notification}} <span class="meta">{{notification.date_added |naturaltime}}</span></td>
-      <td> <button class="ui blue button" >VIEW</button> </td>
+      <td> <a class="ui blue button" href="/notification/details/{{notification.id}}" >VIEW</a> </td>
      
     </tr>
 
@@ -153,7 +153,31 @@
 	</div>
 </div>
 <div class="card"><div class="content">
-		<h3 class="ui header">Leads</h3>
+	   <table class="ui red table">
+  <thead>
+    <tr><th>Leads</th>
+      <th></th>
+  
+  </tr></thead><tbody>
+
+
+                {% if leads %}
+                <tr>
+                  
+ <td>{{leads.lead_customer}}</td>
+                  
+                </tr>
+   
+
+    {% endif %}
+
+
+  </tbody>
+</table>
+
+
+
+
 	</div>
 </div>
 

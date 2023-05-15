@@ -12,7 +12,7 @@ class SignUpForm(forms.Form):
 	password=forms.CharField(label='password', max_length=128)
 	phone_number=forms.CharField(label='phone_number', max_length=128)
 	confirm_password=forms.CharField(label='confirm_password', max_length=128)
-	role=forms.CharField(label='role', max_length=128)
+	department=forms.CharField(label='role', max_length=128)
 	town=forms.CharField(label='town', max_length=128)
 
 
